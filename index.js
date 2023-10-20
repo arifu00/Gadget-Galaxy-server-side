@@ -27,8 +27,10 @@ async function run() {
     await client.connect();
 
     const totalBrands = client.db("gadgetGalaxyDB").collection("brands");
-    const productCollection = client.db("gadgetGalaxyDB").collection("products");
-
+    const productCollection = client
+      .db("gadgetGalaxyDB")
+      .collection("products");
+    const cardCollection = client.db("gadgetGalaxyDB").collection("addtocard");
 
     // brands API
     app.get("/brands", async (req, res) => {
@@ -57,11 +59,83 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-
+    
+    app.get("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
+    app.get("/updateproduct/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
+    app.put("products/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedProduct = req.body;
+      console.log(updatedProduct);
+      const product = {
+        $set: {
+          productName: updatedProduct.productName,
+          brandName: updatedProduct.brandName,
+          productType: updatedProduct.productType,
+          shortDescription: updatedProduct.shortDescription,
+          price: updatedProduct.price,
+          rating: updatedProduct.rating,
+          photo: updatedProduct.photo,
+        },
+      };
+      const result = await productCollection.updateOne(
+        filter,
+        product,
+        options
+      );
+      res.send(result);
+    });
     app.post("/products", async (req, res) => {
       const newProduct = req.body;
       console.log(newProduct);
       const result = await productCollection.insertOne(newProduct);
+      res.send(result);
+    });
+
+    // add to card API
+
+    app.get("/addtocard", async (req, res) => {
+      const cursor = cardCollection.find();
+      const result = await cursor.toArray();
+
+      res.send(result);
+    });
+
+    app.get("/addtocard/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: id };
+      const result = await cardCollection.findOne(query);
+      console.log(result);
+      res.send(result);
+    });
+    app.post("/addtocard", async (req, res) => {
+      const cardProduct = req.body;
+      console.log(cardProduct);
+      const result = await cardCollection.insertOne(cardProduct);
+      res.send(result);
+    });
+    app.delete("/addtocard/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log("please remove this", id);
+      const query = { _id: id };
+      const result = await cardCollection.deleteOne(query);
       res.send(result);
     });
     // Send a ping to confirm a successful connection
