@@ -42,7 +42,7 @@ async function run() {
       const brandName = req.params.brandName;
       const query = { brandName: brandName };
       const result = await totalBrands.findOne(query);
-      console.log(result);
+      // console.log(result);
       res.send(result);
     });
     app.post("/brands", async (req, res) => {
@@ -66,24 +66,18 @@ async function run() {
       const result = await productCollection.findOne(query);
       res.send(result);
     });
-    app.get("/product/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await productCollection.findOne(query);
-      res.send(result);
-    });
+   
     app.get("/updateproduct/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await productCollection.findOne(query);
       res.send(result);
     });
-    app.put("products/:id", async (req, res) => {
+    app.put("/products/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
       const updatedProduct = req.body;
-      console.log(updatedProduct);
       const product = {
         $set: {
           productName: updatedProduct.productName,
@@ -101,6 +95,8 @@ async function run() {
         options
       );
       res.send(result);
+
+      
     });
     app.post("/products", async (req, res) => {
       const newProduct = req.body;
