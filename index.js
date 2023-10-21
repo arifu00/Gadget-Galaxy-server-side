@@ -59,14 +59,14 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-    
+
     app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await productCollection.findOne(query);
       res.send(result);
     });
-   
+
     app.get("/updateproduct/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -95,8 +95,6 @@ async function run() {
         options
       );
       res.send(result);
-
-      
     });
     app.post("/products", async (req, res) => {
       const newProduct = req.body;
@@ -110,13 +108,12 @@ async function run() {
     app.get("/addtocard", async (req, res) => {
       const cursor = cardCollection.find();
       const result = await cursor.toArray();
-
       res.send(result);
     });
 
     app.get("/addtocard/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: id };
+      const query = { _id: new ObjectId(id) };
       const result = await cardCollection.findOne(query);
       console.log(result);
       res.send(result);
@@ -130,7 +127,7 @@ async function run() {
     app.delete("/addtocard/:id", async (req, res) => {
       const id = req.params.id;
       console.log("please remove this", id);
-      const query = { _id: id };
+      const query = { _id: new ObjectId(id) };
       const result = await cardCollection.deleteOne(query);
       res.send(result);
     });
